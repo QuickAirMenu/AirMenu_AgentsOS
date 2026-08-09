@@ -64,6 +64,7 @@ AirMenu_AgentsOS/
 ├── LION.md            ← DevOps & Deployment
 ├── HAWK.md            ← Code Reviewer & QA
 ├── FALCON.md          ← Saudi Content Writer
+├── FALCON_LEXICON.md  ← معجم المحتوى ودليل الأسلوب (Falcon's bible)
 ├── LYNX.md            ← UI/UX Designer
 ├── VIPER.md           ← CX Designer & Journey Reviewer
 └── COBRA.md           ← Security Auditor
