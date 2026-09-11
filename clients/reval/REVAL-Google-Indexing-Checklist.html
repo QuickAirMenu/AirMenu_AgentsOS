@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متابعة فهرسة Google — REVAL</title>
+<style>
+  :root {
+    --primary: #133537;
+    --primary-2: #429592;
+    --success: #16A34A;
+    --danger: #DC2626;
+    --warning: #D97706;
+    --card-bg: #ffffff;
+    --note: #68738a;
+    --line: #e6e9f0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, 'Noto Naskh Arabic', Arial, sans-serif;
+    background: linear-gradient(160deg, #eef4f4 0%, #e3ecec 100%);
+    min-height: 100vh;
+    margin: 0; padding: 24px 12px;
+    color: #1c2733;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, #213f40 55%, #429592 100%);
+    color: #fff; border-radius: 1.25rem;
+    padding: 26px 24px; margin-bottom: 22px;
+    box-shadow: 0 12px 30px rgba(19,53,55,.28);
+  }
+  .hero h1 { margin: 0 0 6px; font-size: 1.5rem; }
+  .hero p  { margin: 0 0 16px; opacity: .85; font-size: .92rem; }
+  .progress-track { background: rgba(255,255,255,.2); border-radius: 30px; height: 14px; overflow: hidden; }
+  .progress-fill  { height: 100%; width: 0%; background: linear-gradient(90deg,#22c55e,#4ade80); border-radius: 30px; transition: width .5s ease; }
+  .progress-label { font-size: .85rem; font-weight: 700; margin-top: 6px; }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px; }
+  .btn {
+    border: none; border-radius: 12px; padding: 10px 20px; font-weight: 700;
+    cursor: pointer; font-size: .9rem; transition: filter .15s ease;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn-save { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #fff; }
+  .btn-reset { background: #fff; color: var(--danger); box-shadow: 0 1px 5px rgba(0,0,0,.08); }
+  .saved-msg { display:none; background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; border-radius:12px; padding:10px; text-align:center; font-weight:700; margin-bottom:14px; }
+
+  .card {
+    background: var(--card-bg); border-radius: 1rem; margin-bottom: 20px;
+    box-shadow: 0 4px 18px rgba(19,53,55,.07); overflow: hidden;
+  }
+  .card-head {
+    background: linear-gradient(135deg, #f2f7f7, #eaf2f2);
+    padding: 14px 16px; font-weight: 800; color: var(--primary);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .card-head .num {
+    background: var(--primary); color: #fff; border-radius: 50%;
+    width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center;
+    font-size: .8rem; margin-inline-end: 8px; flex-shrink: 0;
+  }
+  .card-body { padding: 6px 16px 10px; }
+
+  .hint {
+    background: #fff8e6; border: 1px solid #f3d08a; border-radius: 12px;
+    padding: 10px 14px; font-size: .85rem; color: #7c5a10; margin: 10px 0;
+  }
+  .hint-green { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; margin: 0; }
+  .hint-red { background: #fef2f2; border-color: #fecaca; color: var(--danger); }
+
+  .url { display:block; direction:ltr; text-align:left; font-family:Consolas,monospace; font-size:.82rem; color:#1B3A6B; margin-top:3px; }
+
+  .check-item { display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px dashed var(--line); }
+  .check-item:last-child { border-bottom:none; }
+  .check-item label { cursor:pointer; font-weight:500; font-size:.95rem; }
+  .check-item .note { font-size:.8rem; color:var(--note); display:block; margin-top:2px; font-weight:400; }
+  .check-item input[type="checkbox"] {
+    -webkit-appearance:none; appearance:none; width:1.5rem; height:1.5rem; margin-top:2px; cursor:pointer;
+    border:2px solid #b9c4d6; border-radius:50%; background:#fff; flex-shrink:0;
+    transition:all .15s ease; position:relative;
+  }
+  .check-item input[type="checkbox"]:hover { border-color: var(--success); }
+  .check-item input[type="checkbox"]:checked { background: var(--success); border-color: var(--success); box-shadow:0 2px 8px rgba(22,163,74,.35); }
+  .check-item input[type="checkbox"]:checked::after {
+    content:'✓'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:900; font-size:1.05rem; line-height:1;
+  }
+  .check-item input:checked + label { color: var(--success); font-weight:600; }
+  .check-item input:checked + label .note { color:var(--note); }
+
+  .footer { text-align:center; color:var(--note); font-size:.8rem; margin: 22px 0 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="hero">
+    <h1>🚀 متابعة فهرسة Google — <span id="projName">REVAL Indexing</span></h1>
+    <p>شركة REVAL لإدارة العمليات — reval-sa.com · Google Search Console (sc-domain:reval-sa.com) · تلقائي عبر gsc_monitor.py</p>
+    <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 0 مكتمل — 0%</div>
+  </div>
+
+  <div class="saved-msg" id="savedMsg">✓ تم حفظ تقدمك</div>
+
+  <div class="actions">
+    <button class="btn btn-save" onclick="saveNow()">💾 حفظ التقدم</button>
+    <button class="btn btn-reset" onclick="resetAll()">↺ تصفير الحالة</button>
+  </div>
+
+  <!-- ═══ 1. المهام المكتملة — أساسيات REVAL ═══ -->
+  <div class="card">
+    <div class="card-head"><span><span class="num">1</span>🛠️ الأساسيات — مكتملة</span><span class="hint hint-green" style="margin:0">تمت يوميًا</span></div>
+    <div class="card-body">
+      <div class="check-item"><input type="checkbox" id="r01" checked><label>رفع حظر الفهرسة (noindex)<span class="note">blog_public لتفعيل الظهور</span></label></div>
+      <div class="check-item"><input type="checkbox" id="r02" checked><label>خريطة الموقع Sitemap + robots.txt<span class="note">إضافة إلى /sitemap.xml</span></label></div>
+      <div class="check-item"><input type="checkbox" id="r03" checked><label>SEO (Yoast) — أوصاف ميتا + Open Graph + Schema</label></div>
+      <div class="check-item"><input type="checkbox" id="r04" checked><label>إصلاح نماذج التواصل — حقول الجوال + رفع PDF/Word</label></div>
+      <div class="check-item"><input type="checkbox" id="r05" checked><label>تصحيح خريطة صفحة اتصل بنا</label></div>
+      <div class="check-item"><input type="checkbox" id="r06" checked><label>زر "شاهد الوظائف" + المرساة</label></div>
+      <div class="check-item"><input type="checkbox" id="r07" checked><label>رابط انضم إلينا العربي ← /ar/join-us/</label></div>
+      <div class="check-item"><input type="checkbox" id="r08" checked><label>حماية تخمين كلمة المرور (Limit Login Attempts)</label></div>
+      <div class="check-item"><input type="checkbox" id="r09" checked><label>النسخ الاحتياطي — UpdraftPlus + جدولة</label></div>
+      <div class="check-item"><input type="checkbox" id="r10" checked><label>تقوية الأمان — كشف المستخدم + إخفاء الإصدارات</label></div>
+      <div class="check-item"><input type="checkbox" id="r11" checked><label>إخفاء رابط الدخول ← /reval-portal/</label></div>
+      <div class="check-item"><input type="checkbox" id="r12" checked><label>المصادقة الثنائية (2FA)</label></div>
+      <div class="check-item"><input type="checkbox" id="r13" checked><label>صفحات الأخطاء — 404 + 403/500/502/503 + صيانة</label></div>
+      <div class="check-item"><input type="checkbox" id="r14" checked><label>تحديث الروابط السوشيال</label></div>
+      <div class="check-item"><input type="checkbox" id="r15" checked><label>Google Analytics (GA4) — G-LN7085FW4W</label></div>
+      <div class="check-item"><input type="checkbox" id="r16" checked><label>حماية CAPTCHA — Cloudflare Turnstile</label></div>
+      <div class="check-item"><input type="checkbox" id="r17" checked><label>شهادة SSL سليمة حتى 15-10-2026</label></div>
+      <div class="check-item"><input type="checkbox" id="r18" checked><label>تجهيز الوصول لـ Search Console API (حساب خدمة)</label></div>
+    </div>
+  </div>
+
+  <!-- ═══ 2. مكتمل — إصلاحات تقرير التغطية ═══ -->
+  <div class="card">
+    <div class="card-head"><span><span class="num">2</span>🔧 إصلاح تقرير التغطية 2026-09-10</span><span class="hint hint-green" style="margin:0">أُجري ونشر</span></div>
+    <div class="card-body">
+      <div class="check-item"><input type="checkbox" id="g01" checked><label>تحليل تقرير Coverage مرتين<span class="note">نسخة يدوية 10/9 + تلقائية عبر API</span></label></div>
+      <div class="check-item"><input type="checkbox" id="g02" checked><label>تحديث sitemap.xml إلى 16 صفحة<span class="note">حذف خلاصات RSS + الرابط الميت، إضافة /ar/join-us/ — مرفوع لنصّاب</span></label></div>
+      <div class="check-item"><input type="checkbox" id="g03" checked><label>إضافة 301 للرابط العربي القديم<span class="note">reval-old-url-redirects.php → /ar/join-us/</span></label></div>
+      <div class="check-item"><input type="checkbox" id="g04" checked><label>إعادة إرسال sitemap في Search Console<span class="note">تم 10/9/2026 — "تم الإجراء بنجاح"</span></label></div>
+    </div>
+  </div>
+
+  <!-- ═══ 3. طلب الفهرسة — دفعة 1 ═══ -->
+  <div class="card">
+    <div class="card-head"><span><span class="num">3</span>📶 طلب الفهرسة — دفعة 1 (الأهم)</span></div>
+    <div class="card-body">
+      <div class="hint">الأولوية: إزالة noindex المخزّنة + تتبّع الصفحات المكتشفة. المسار: فحص عنوان URL ← الصق الرابط ← طلب الفهرسة.</div>
+      <div class="check-item"><input type="checkbox" id="b1a"><label>طلب فهرسة الصفحات — services<span class="url">https://reval-sa.com/services/</span><span class="note">حاليًا: مستبعدة بـ noindex (نسخة مخزّنة قديمة — الصفحة الحية نظيفة)</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b1b"><label>طلب فهرسة الصفحات — industries<span class="url">https://reval-sa.com/industries/</span><span class="note">مكتشفة وغير مفهرسة بعد</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b1c"><label>طلب فهرسة الصفحات — hse-sustainability<span class="url">https://reval-sa.com/hse-sustainability/</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b1d"><label>طلب فهرسة الصفحات — about-us<span class="url">https://reval-sa.com/about-us/</span></label></div>
+    </div>
+  </div>
+
+  <!-- ═══ 4. طلب الفهرسة — دفعة 2 ═══ -->
+  <div class="card">
+    <div class="card-head"><span><span class="num">4</span>📶 طلب الفهرسة — دفعة 2</span></div>
+    <div class="card-body">
+      <div class="check-item"><input type="checkbox" id="b2a"><label>طلب فهرسة الصفحات — why-reval<span class="url">https://reval-sa.com/why-reval/</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b2b"><label>طلب فهرسة الصفحات — contact-us<span class="url">https://reval-sa.com/contact-us/</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b2c"><label>طلب فهرسة الصفحات — ar/home<span class="url">https://reval-sa.com/ar/home/</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b2d"><label>طلب فهرسة الصفحات — ar/services<span class="url">https://reval-sa.com/ar/services/</span></label></div>
+    </div>
+  </div>
+
+  <!-- ═══ 5. طلب الفهرسة — دفعة 3 ═══ -->
+  <div class="card">
+    <div class="card-head"><span><span class="num">5</span>📶 طلب الفهرسة — دفعة 3 (العربية)</span></div>
+    <div class="card-body">
+      <div class="check-item"><input type="checkbox" id="b3a"><label>طلب فهرسة الصفحات — ar/about-us<span class="url">https://reval-sa.com/ar/about-us/</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b3b"><label>طلب فهرسة الصفحات — ar/why-reval<span class="url">https://reval-sa.com/ar/why-reval/</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b3c"><label>طلب فهرسة الصفحات — ar/hse-sustainability<span class="url">https://reval-sa.com/ar/hse-sustainability/</span></label></div>
+      <div class="check-item"><input type="checkbox" id="b3d"><label>طلب فهرسة الصفحات — ar/contact-us<span class="url">https://reval-sa.com/ar/contact-us/</span></label></div>
+    </div>
+  </div>
+
+  <!-- ═══ 6. تحقق ومتابعة ═══ -->
+  <div class="card">
+    <div class="card-head"><span><span class="num">6</span>🔁 التحقق والمتابعة</span></div>
+    <div class="card-body">
+      <div class="hint">لبندَي "إعادة التوجيه" و"noindex": تقرير التغطية ← اضغط السبب ← زر "التحقق من الإصلاح".<br>المراقبة الأسبوعية: <span class="url" style="display:inline;">python D:\Projects\Reval-Operations\seo\gsc_monitor.py --all</span></div>
+      <div class="check-item"><input type="checkbox" id="m01"><label>التحقق من إصلاح بند "noindex"<span class="note">تقرير التغطية ← noindex ← Validate fix</span></label></div>
+      <div class="check-item"><input type="checkbox" id="m02"><label>التحقق من إصلاح بند "إعادة التوجيه"<span class="note">لروابط 3 القديمة (أرشفة سابقة)</span></label></div>
+      <div class="check-item"><input type="checkbox" id="m03"><label>اعتماد فهرسة sitemap.xml بالكامل<span class="note">المفهرس بصفر حاليًا (ما زال قيد المعالجة)</span></label></div>
+      <div class="check-item"><input type="checkbox" id="m04"><label>مراقبة أسبوعية عبر gsc_monitor.py<span class="note">التغطية + الأداء + sitemap (آلي بعد الآن)</span></label></div>
+      <div class="check-item"><input type="checkbox" id="m05"><label>إعادة فحص التقرير بعد أسبوعين<span class="note">مقارنة الفهرس: 4 مفهرسة حاليًا → الهدف كلها</span></label></div>
+    </div>
+  </div>
+
+  <div class="footer">REVAL Website Audit — AirMenu AgentsOS · آخر تحديث: 11/09/2026</div>
+</div>
+
+<script>
+  const prefix = 'reval-index-' + (document.getElementById('projName').textContent.trim() || 'project').replace(/\s+/g, '-');
+
+  function loadProgress() {
+    document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el => {
+      if (el.hasAttribute('checked')) return;
+      const key = prefix + el.id;
+      const cached = localStorage.getItem(key);
+      if (cached === 'true') el.checked = true;
+    });
+    updateBar();
+  }
+
+  function updateBar() {
+    const boxes = [...document.querySelectorAll('.check-item input[type="checkbox"]')];
+    const done = boxes.filter(b => b.checked).length;
+    const total = boxes.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + total + ' مكتمل — ' + pct + '%';
+  }
+
+  function saveNow() {
+    document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el => {
+      localStorage.setItem(prefix + el.id, el.checked ? 'true' : 'false');
+    });
+    const msg = document.getElementById('savedMsg');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 2000);
+  }
+
+  function resetAll() {
+    if (!confirm('تصفير جميع البنود وإزالة المحفوظ؟')) return;
+    document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el => {
+      if (!el.hasAttribute('checked')) el.checked = false;
+      localStorage.removeItem(prefix + el.id);
+    });
+    updateBar();
+  }
+
+  document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el =>
+    el.addEventListener('change', updateBar)
+  );
+  window.addEventListener('storage', updateBar);
+
+  document.getElementById('projName').addEventListener('input', () => location.reload());
+  let t;
+  document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el =>
+    el.addEventListener('change', () => {
+      clearTimeout(t); t = setTimeout(saveNow, 1200);
+    })
+  );
+
+  loadProgress();
+</script>
+</body>
+</html>

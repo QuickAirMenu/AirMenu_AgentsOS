@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تقرير تدقيق موقع REVAL — حالة المعالجة</title>
+<style>
+  :root {
+    --teal: #133537;
+    --teal2: #213f40;
+    --accent: #429592;
+    --green: #2e7d32;
+    --orange: #e65100;
+    --bg: #f4f6f6;
+    --card: #ffffff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: #1c1d18;
+    font-family: 'Segoe UI', Tahoma, 'Noto Naskh Arabic', 'Cairo', sans-serif;
+    line-height: 1.8;
+    font-size: 16px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 32px 20px 60px; }
+  header {
+    background: linear-gradient(135deg, var(--teal), var(--teal2));
+    color: #fff;
+    padding: 40px 32px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(19,53,55,.25);
+  }
+  header h1 { margin: 0 0 8px; font-size: 30px; }
+  header p { margin: 0; opacity: .9; font-size: 17px; }
+  .section {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 26px 28px;
+    margin-top: 22px;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    border: 1px solid #e6ecec;
+  }
+  h2 { color: var(--teal); font-size: 21px; margin: 0 0 14px; border-bottom: 2px solid var(--accent); padding-bottom: 8px; }
+  .overview li { margin-bottom: 6px; }
+  .badge {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+  .badge.done { background: #e6f4e6; color: var(--green); border: 1px solid #b7dbb7; }
+  .badge.pending { background: #fff0e6; color: var(--orange); border: 1px solid #f3c9a8; }
+  .item {
+    padding: 12px 0;
+    border-bottom: 1px dashed #e6ecec;
+  }
+  .item:last-child { border-bottom: none; }
+  .item .num { font-weight: 700; color: var(--teal2); }
+  .note {
+    margin-top: 18px;
+    background: #fffbe6;
+    border-right: 4px solid #e6c300;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #6b5d00;
+  }
+  .stats { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
+  .stat {
+    flex: 1; min-width: 130px; text-align: center;
+    background: var(--card); border-radius: 12px; padding: 16px;
+    border: 1px solid #e6ecec;
+  }
+  .stat b { display: block; font-size: 28px; }
+  .stat.green b { color: var(--green); }
+  .stat.orange b { color: var(--orange); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>تقرير تدقيق موقع REVAL</h1>
+    <p>شركة REVAL لإدارة العمليات — reval-sa.com</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat green"><b>10</b>مكتملة</div>
+    <div class="stat orange"><b>2</b>قيد الانتظار</div>
+  </div>
+
+  <div class="section">
+    <h2>1) نظرة عامة</h2>
+    <ul class="overview">
+      <li>الموقع ثنائي اللغة (عربي + إنجليزي)، مبني على WordPress + Astra + Elementor، وبه 16 صفحة (8 عربي + 8 إنجليزي).</li>
+      <li>الصفحات: الرئيسية، من نحن، خدماتنا، لماذا رفال، القطاعات، HSE والاستدامة، اتصل بنا، انضم إلينا.</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>الملاحظات وحالة المعالجة</h2>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">1- بيانات الدخول والاستضافة:</span> تم شراء الاستضافة واستلام بيانات السيرفر (SSH) ولوحة الاستضافة (cPanel).
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">2- حساب الدومين:</span> تم شراء الدومين.
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">3- حظر الفهرسة (noindex):</span> رُفع حظر الفهرسة عن جميع الصفحات الـ16 وأصبح الموقع قابلاً للظهور في محركات البحث.
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">4- خريطة الموقع والـ robots.txt:</span> تم إنشاء ملف Sitemap.xml وملف robots.txt وربطهما بالموقع.
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">5- الميتا وOpen Graph وSchema:</span> تم تركيب إضافة SEO (Yoast) وتُولَّد الآن أوصاف الميتا ووسوم المشاركة والبيانات المنظمة تلقائياً.
+    </div>
+
+    <div class="item">
+      <span class="badge pending">⏳ لم يتم بعد</span>
+      <span class="num">6- التحليلات والتتبع:</span> بانتظار رقم Google Analytics (GA4) منكم لإضافته.
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">7- الأزرار والنماذج المعطلة:</span> أُصلح زر "شاهد الوظائف"، وأُصلح رفع السيرة الذاتية ليقبل PDF وWord، وصُحّحت أسماء حقول النموذج (تكرار حقل الجوال) بحيث تصلكم البيانات على بريد الشركة.
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">8- خريطة صفحة اتصل بنا:</span> استُبدلت الخريطة الخاطئة بموقعكم الصحيح.
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">9- رابط صفحة انضم إلينا بالعربي:</span> أصبح الرابط نظيفاً بالإنجليزية: reval-sa.com/ar/join-us/
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">10- عنوان تبويب المتصفح للصفحة العربية:</span> أصبح العنوان بالعربية: "ريفال لإدارة العمليات".
+    </div>
+
+    <div class="item">
+      <span class="badge pending">⏳ لم يتم بعد</span>
+      <span class="num">11- حماية CAPTCHA للنماذج:</span> بانتظار اختيار مزوّد الحماية وتزويدنا بالمفاتيح اللازمة.
+    </div>
+
+    <div class="item">
+      <span class="badge done">✓ تم</span>
+      <span class="num">12- حماية تخمين كلمة المرور:</span> تم تفعيل حماية من محاولات الدخول المتكررة (Limit Login Attempts).
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>ملاحظة:</strong> الموقع يعمل على النطاق <b>reval-sa.com</b> (وليس revalksa.com كما ورد سابقاً).
+  </div>
+</div>
+</body>
+</html>
