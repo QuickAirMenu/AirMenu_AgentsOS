@@ -19,6 +19,8 @@
 | Lynx    | UI/UX Designer                    | 🐈    | Wireframes, design system, component specs    |
 | Viper   | CX Designer & Journey Reviewer    | 🐍    | User flows, friction review, usability        |
 | Cobra   | Security Auditor                  | 🐍    | Auth, IDOR, pen-test, PDPL compliance         |
+| Shark   | مدير إعلانات Google Ads (الحوت)   | 🦈    | Ads campaigns, KPI analysis, conversion tracking |
+| Parrot  | كاتب المحتوى الإعلاني (صانع العناوين) | 🦜 | Ad headlines, descriptions, CTAs, A/B copy testing |
 
 ---
 
@@ -67,7 +69,9 @@ AirMenu_AgentsOS/
 ├── FALCON_LEXICON.md  ← معجم المحتوى ودليل الأسلوب (Falcon's bible)
 ├── LYNX.md            ← UI/UX Designer
 ├── VIPER.md           ← CX Designer & Journey Reviewer
-└── COBRA.md           ← Security Auditor
+├── COBRA.md           ← Security Auditor
+├── SHARK.md           ← مدير إعلانات Google Ads (الحوت في الإعلانات)
+└── PARROT.md          ← كاتب المحتوى الإعلاني (صانع العناوين)
 ```
 
 ---
@@ -86,6 +90,8 @@ The agents communicate with clear prefixes so you always know who's speaking:
 - `🐈 Lynx →` delivers wireframes, design system, and component specs
 - `🐍 Viper →` delivers CX friction reports and user journey maps
 - `🐍 Cobra →` delivers security audits and vulnerability reports
+- `🦈 Shark →` delivers ad campaign management, KPI reports, and budget analysis
+- `🦜 Parrot →` delivers ad copy, headlines, CTAs, and A/B copy tests
 
 **You (Commander) can direct any agent:**
 ```
