@@ -71,7 +71,8 @@ AirMenu_AgentsOS/
 ├── VIPER.md           ← CX Designer & Journey Reviewer
 ├── COBRA.md           ← Security Auditor
 ├── SHARK.md           ← مدير إعلانات Google Ads (الحوت في الإعلانات)
-└── PARROT.md          ← كاتب المحتوى الإعلاني (صانع العناوين)
+├── PARROT.md          ← كاتب المحتوى الإعلاني (صانع العناوين)
+└── TRACKER_TEMPLATE.html ← قالب صفحة متابعة المشروع (انسخه لكل مشروع جديد)
 ```
 
 ---

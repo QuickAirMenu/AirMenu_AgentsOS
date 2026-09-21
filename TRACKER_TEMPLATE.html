@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<!--
+  ═══════════════════════════════════════════════════════════════
+  📋 قالب صفحة متابعة المشروع (Project Tracker Template)
+  نسخة عامة قابلة للتخصيص لأي مشروع — فريق AirMenu_AgentsOS
+  يحفظ التقدم تلقائياً في المتصفح (localStorage)
+  ═══════════════════════════════════════════════════════════════
+  الاستخدام:
+  1. نسخ هذا الملف وسمّيه باسم مشروعك (مثل TRACKER_مشروعي.html)
+  2. عدّل: اسم المشروع، بطاقات KPI، أسماء الوكلاء، والبنود
+  3. افتحه في المتصفح — كل خانات التحديد تُحفظ تلقائياً
+-->
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متابعة المشروع — قالب</title>
+<style>
+  :root {
+    --primary: #1B3A6B;
+    --primary-2: #2a5aa8;
+    --gold: #C9A227;
+    --success: #16A34A;
+    --danger: #DC2626;
+    --warning: #D97706;
+    --card-bg: #ffffff;
+    --note: #68738a;
+    --line: #e6e9f0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+    background: linear-gradient(160deg, #eef1f7 0%, #e3e9f5 100%);
+    min-height: 100vh;
+    margin: 0; padding: 24px 12px;
+    color: #1c2733;
+  }
+  .container { max-width: 880px; margin: 0 auto; }
+
+  .hero {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 55%, #3a6fb0 100%);
+    color: #fff; border-radius: 1.25rem;
+    padding: 26px 24px; margin-bottom: 22px;
+    box-shadow: 0 12px 30px rgba(27,58,107,.28);
+  }
+  .hero h1 { margin: 0 0 6px; font-size: 1.5rem; }
+  .hero .sub { margin: 0 0 16px; opacity: .85; font-size: .92rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .chip { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); border-radius: 30px; padding: 5px 12px; font-size: .78rem; }
+  .chip b { color: #ffd76a; }
+  .progress-track { background: rgba(255,255,255,.2); border-radius: 30px; height: 14px; overflow: hidden; }
+  .progress-fill  { height: 100%; width: 0%; background: linear-gradient(90deg,#22c55e,#4ade80); border-radius: 30px; transition: width .5s ease; }
+  .progress-label { font-size: .85rem; font-weight: 700; margin-top: 6px; }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 18px; }
+  .btn { border: none; border-radius: 12px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: .9rem; transition: filter .15s ease; }
+  .btn:hover { filter: brightness(1.08); }
+  .btn-save { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: #fff; }
+  .btn-reset { background: #fff; color: var(--danger); box-shadow: 0 1px 5px rgba(0,0,0,.08); }
+  .saved-msg { display:none; background:#dcfce7; color:#15803d; border:1px solid #bbf7d0; border-radius:12px; padding:10px; text-align:center; font-weight:700; margin-bottom:14px; }
+
+  .kpi-wrap { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:10px; margin-bottom:18px; }
+  .kpi { background:#fff; border-radius:14px; padding:12px 8px; text-align:center; box-shadow:0 4px 14px rgba(27,58,107,.08); border-top:4px solid var(--primary); }
+  .kpi .v { font-size:1.25rem; font-weight:800; color:var(--primary); }
+  .kpi .k { font-size:.72rem; color:var(--note); margin-top:3px; }
+  .kpi.ok { border-top-color: var(--success); } .kpi.ok .v { color: var(--success); }
+  .kpi.warn { border-top-color: var(--warning); } .kpi.warn .v { color: var(--warning); }
+
+  .card { background: var(--card-bg); border-radius: 1rem; margin-bottom: 20px; box-shadow: 0 4px 18px rgba(27,58,107,.07); overflow: hidden; }
+  .card-head { background: linear-gradient(135deg, #f3f6fc, #eaf0fa); padding: 14px 16px; font-weight: 800; color: var(--primary); display: flex; align-items: center; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--line); cursor: pointer; user-select: none; }
+  .card-head:hover { background: linear-gradient(135deg, #edf2fb, #e0e9f7); }
+  .card-head::after { content:'▾'; margin-inline-start:auto; font-size:.85rem; opacity:.55; transition: transform .2s ease; }
+  .card.collapsed .card-head { border-bottom-color: transparent; }
+  .card.collapsed .card-head::after { transform: rotate(-90deg); }
+  .card.collapsed .card-body { display: none; }
+  .card-head .num { background: var(--primary); color: #fff; border-radius: 50%; width: 26px; height: 26px; display: inline-flex; align-items: center; justify-content: center; font-size: .8rem; margin-inline-end: 8px; flex-shrink: 0; }
+  .card-head .agent-tag { font-size: .68rem; color: var(--gold); background: #fff8e6; border: 1px solid #f3d08a; border-radius: 20px; padding: 3px 10px; white-space: nowrap; }
+  .card-body { padding: 6px 16px 10px; }
+
+  .hint { background: #fff8e6; border: 1px solid #f3d08a; border-radius: 12px; padding: 10px 14px; font-size: .85rem; color: #7c5a10; margin: 10px 0; }
+  .hint-green { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+  .hint-red { background: #fef2f2; border-color: #fecaca; color: var(--danger); }
+  .hint-blue { background: #eff6ff; border-color: #bfdbfe; color: #1e40af; }
+
+  .check-item { display:flex; align-items:flex-start; gap:12px; padding:11px 0; border-bottom:1px dashed var(--line); }
+  .check-item:last-child { border-bottom:none; }
+  .check-item label { cursor:pointer; font-weight:500; font-size:.95rem; }
+  .check-item .note { font-size:.8rem; color:var(--note); display:block; margin-top:2px; font-weight:400; }
+  .check-item .who { display:inline-block; font-size:.68rem; background:#eef2fa; color:var(--primary); border-radius:20px; padding:2px 10px; margin-inline-start:6px; font-weight:600; }
+  .check-item input[type="checkbox"] {
+    -webkit-appearance:none; appearance:none; width:1.5rem; height:1.5rem; margin-top:2px; cursor:pointer;
+    border:2px solid #b9c4d6; border-radius:50%; background:#fff; flex-shrink:0;
+    transition:all .15s ease; position:relative;
+  }
+  .check-item input[type="checkbox"]:hover { border-color: var(--success); }
+  .check-item input[type="checkbox"]:checked { background: var(--success); border-color: var(--success); box-shadow:0 2px 8px rgba(22,163,74,.35); }
+  .check-item input[type="checkbox"]:checked::after { content:'✓'; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:900; font-size:1.05rem; line-height:1; }
+  .check-item input:checked + label { color: var(--success); font-weight:600; }
+  .check-item input:checked + label .note { color:var(--note); }
+
+  .team-strip { background:#fff; border:1px solid var(--line); border-radius:1rem; padding:14px 16px; margin-bottom:20px; box-shadow:0 4px 18px rgba(27,58,107,.07); }
+  .team-strip h3 { margin:0 0 10px; font-size:1rem; color:var(--primary); }
+  .team-list { display:flex; flex-wrap:wrap; gap:8px; }
+  .team-person { font-size:.78rem; background:#f5f7fc; border:1px solid var(--line); border-radius:20px; padding:4px 12px; color:#334; }
+  .team-person b { color:var(--primary-2); }
+
+  .phase-header { background:linear-gradient(135deg, #fef9ee, #fdf3d7); padding:10px 14px; font-weight:700; color:#92400e; font-size:.85rem; border-bottom:1px dashed #f3d08a; margin-top:6px; }
+
+  .footer { text-align:center; color:var(--note); font-size:.8rem; margin: 22px 0 6px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ═══ عدّل هذا القسم حسب مشروعك ═══ -->
+  <div class="hero">
+    <h1>🚀 متابعة مشروع <span id="projName">اسم المشروع</span></h1>
+    <p class="sub">وصف مختصر للمشروع</p>
+    <div class="chips">
+      <span class="chip">العميل: <b>اسم العميل</b></span>
+      <span class="chip">المدير: <b>اسم المدير</b></span>
+      <span class="chip">الميزانية: <b>—</b></span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressBar"></div></div>
+    <div class="progress-label" id="progressLabel">0 / 0 مكتمل — 0%</div>
+  </div>
+
+  <!-- ═══ عدّل بطاقات KPI حسب مؤشرات مشروعك ═══ -->
+  <div class="kpi-wrap">
+    <div class="kpi"><div class="v">—</div><div class="k">مؤشر 1</div></div>
+    <div class="kpi"><div class="v">—</div><div class="k">مؤشر 2</div></div>
+    <div class="kpi"><div class="v">—</div><div class="k">مؤشر 3</div></div>
+    <div class="kpi"><div class="v">—</div><div class="k">مؤشر 4</div></div>
+  </div>
+
+  <div class="saved-msg" id="savedMsg">✓ تم حفظ تقدمك</div>
+
+  <div class="actions">
+    <button class="btn btn-save" onclick="saveNow()">💾 حفظ التقدم</button>
+    <button class="btn btn-reset" onclick="resetAll()">↺ تصفير الحالة</button>
+  </div>
+
+  <!-- ═══ فريق الوكلاء (من AirMenu_AgentsOS) ═══ -->
+  <div class="team-strip">
+    <h3>🐾 فريق الوكلاء الموكّل بالمشروع</h3>
+    <div class="team-list">
+      <span class="team-person">🐉 Dragon — قائد المشروع</span>
+      <span class="team-person">🦈 Shark — مدير الإعلانات</span>
+      <span class="team-person">🦜 Parrot — كاتب الإعلانات</span>
+      <span class="team-person">🦊 Fox — الواجهة الأمامية</span>
+      <span class="team-person">🦁 Lion — نصب وإطلاق</span>
+      <span class="team-person">🦅 Falcon — المحتوى والـ SEO</span>
+      <span class="team-person">🐈 Lynx — التصميم</span>
+      <span class="team-person">🐍 Viper — تجربة العميل</span>
+      <span class="team-person">🦅 Hawk — مراجعة الجودة</span>
+    </div>
+    <div style="margin-top:10px;font-size:.8rem;">
+      📂 مستودع الفريق: <a href="https://github.com/QuickAirMenu/AirMenu_AgentsOS" target="_blank" rel="noopener" style="color:#2a5aa8;font-weight:700;">github.com/QuickAirMenu/AirMenu_AgentsOS</a>
+    </div>
+  </div>
+
+  <!-- ═══ مثال: قسم مهام عام ═══ -->
+  <div class="card">
+    <div class="card-head"><span><span class="num">1</span>📋 مراحل المشروع</span><span class="agent-tag">🐉 Dragon</span></div>
+    <div class="card-body">
+      <div class="phase-header">المرحلة 1 — التخطيط</div>
+      <div class="check-item"><input type="checkbox" id="m1"><label>تحديد نطاق المشروع والمتطلبات<span class="note">أضف تفاصيل هنا</span></label></div>
+      <div class="check-item"><input type="checkbox" id="m2"><label>توزيع المهام على الوكلاء<span class="note">Dragon يقود التوزيع</span></label></div>
+
+      <div class="phase-header">المرحلة 2 — التنفيذ</div>
+      <div class="check-item"><input type="checkbox" id="m3"><label>مهمة تنفيذية 1<span class="note">أضف تفاصيل هنا</span></label></div>
+      <div class="check-item"><input type="checkbox" id="m4"><label>مهمة تنفيذية 2<span class="note">أضف تفاصيل هنا</span></label></div>
+
+      <div class="phase-header">المرحلة 3 — التسليم</div>
+      <div class="check-item"><input type="checkbox" id="m5"><label>التسليم النهائي + التوثيق<span class="note">أضف تفاصيل هنا</span></label></div>
+    </div>
+  </div>
+
+  <div class="hint hint-green">💡 عدّل هذا القالب حسب مشروعك: الاسم، مؤشرات KPI، الوكلاء، والبنود. كل خانات التحديد تُحفظ تلقائياً في متصفحك.</div>
+
+  <div class="footer">قالب متابعة المشروع — فريق AirMenu_AgentsOS · github.com/QuickAirMenu/AirMenu_AgentsOS</div>
+</div>
+
+<script>
+  const prefix = 'tracker-' + (document.getElementById('projName').textContent.trim() || 'project').replace(/\s+/g, '-');
+
+  function loadProgress() {
+    document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el => {
+      if (el.hasAttribute('checked')) return;
+      const key = prefix + el.id;
+      const cached = localStorage.getItem(key);
+      if (cached === 'true') el.checked = true;
+    });
+    updateBar();
+  }
+
+  function updateBar() {
+    const boxes = [...document.querySelectorAll('.check-item input[type="checkbox"]')];
+    const done = boxes.filter(b => b.checked).length;
+    const total = boxes.length;
+    const pct = total ? Math.round(done / total * 100) : 0;
+    document.getElementById('progressBar').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = done + ' / ' + total + ' مكتمل — ' + pct + '%';
+  }
+
+  function saveNow() {
+    document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el => {
+      localStorage.setItem(prefix + el.id, el.checked ? 'true' : 'false');
+    });
+    const msg = document.getElementById('savedMsg');
+    msg.style.display = 'block';
+    setTimeout(() => msg.style.display = 'none', 2000);
+  }
+
+  function resetAll() {
+    if (!confirm('تصفير جميع البنود وإزالة المحفوظ؟')) return;
+    document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el => {
+      if (!el.hasAttribute('checked')) el.checked = false;
+      localStorage.removeItem(prefix + el.id);
+    });
+    updateBar();
+  }
+
+  document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el =>
+    el.addEventListener('change', updateBar)
+  );
+  window.addEventListener('storage', updateBar);
+
+  let t;
+  document.querySelectorAll('.check-item input[type="checkbox"]').forEach(el =>
+    el.addEventListener('change', () => {
+      clearTimeout(t); t = setTimeout(saveNow, 1200);
+    })
+  );
+
+  document.querySelectorAll('.card').forEach((card, i) => {
+    const key = prefix + '-card-' + i;
+    if (localStorage.getItem(key) === '1') card.classList.add('collapsed');
+    card.querySelector('.card-head').addEventListener('click', () => {
+      card.classList.toggle('collapsed');
+      localStorage.setItem(key, card.classList.contains('collapsed') ? '1' : '0');
+    });
+  });
+
+  loadProgress();
+</script>
+</body>
+</html>
